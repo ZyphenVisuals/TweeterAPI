@@ -1,4 +1,4 @@
-package com.zyphenvisuals.TweeterAPI.exceptions;
+package com.zyphenvisuals.TweeterAPI.exception;
 
 public class UsernameTakenException extends RuntimeException {
   public UsernameTakenException(String message) {
