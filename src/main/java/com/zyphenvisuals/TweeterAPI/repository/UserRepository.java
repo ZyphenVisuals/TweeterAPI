@@ -1,6 +1,6 @@
 package com.zyphenvisuals.TweeterAPI.repository;
 
-import com.zyphenvisuals.TweeterAPI.model.User;
+import com.zyphenvisuals.TweeterAPI.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

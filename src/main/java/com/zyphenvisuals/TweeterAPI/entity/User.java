@@ -1,8 +1,11 @@
-package com.zyphenvisuals.TweeterAPI.model;
+package com.zyphenvisuals.TweeterAPI.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users", schema = "public")
 public class User {
@@ -23,16 +26,4 @@ public class User {
     }
 
     public User() {}
-
-    public int getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }
