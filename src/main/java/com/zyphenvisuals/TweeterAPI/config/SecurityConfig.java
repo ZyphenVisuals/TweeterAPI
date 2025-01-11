@@ -22,7 +22,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
                         "/api/v1/user/register",
-                        "api/v1/user/login",
+                        "/api/v1/user/login",
                         "/api/health",
                         "/swagger-ui/**",
                         "/swagger-ui.html",

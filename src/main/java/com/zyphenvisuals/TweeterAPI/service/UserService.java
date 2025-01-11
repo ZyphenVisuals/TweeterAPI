@@ -61,7 +61,7 @@ public class UserService {
         // generate JWT
         try{
             return JWT.create()
-                    .withSubject(String.valueOf(user.getId()))
+                    .withSubject(String.valueOf(user.getId())) // FIXME sequential ID exposed to the user
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .withExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
                     .sign(algorithm);
