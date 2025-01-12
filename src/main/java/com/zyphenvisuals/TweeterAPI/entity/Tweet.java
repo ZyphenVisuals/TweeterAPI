@@ -10,25 +10,24 @@ import java.sql.Timestamp;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users", schema = "public")
-public class User {
-
+@Table(name = "tweets", schema = "public")
+public class Tweet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
     private int id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @NonNull
-    private String username;
+    private Integer creator;
 
-    @Column(nullable = false, columnDefinition = "bpchar")
+    @Column(nullable = false)
     @NonNull
-    private String password;
+    private String text;
 
     @Column(nullable = false, insertable = false, updatable = false)
     private Timestamp created;
 
-    @Column(nullable = false, insertable = false, updatable = false)
-    private Timestamp updated;
+    @Column(nullable = false, insertable = false)
+    private boolean deleted;
 }

@@ -21,7 +21,7 @@ public class UserService {
         // check if the user already exists
         User oldUser = userRepository.findByUsername(username);
         if (oldUser != null) {
-            throw new UsernameTakenException("Username is already taken.");
+            throw new UsernameTakenException();
         }
 
         // compute hashed  password

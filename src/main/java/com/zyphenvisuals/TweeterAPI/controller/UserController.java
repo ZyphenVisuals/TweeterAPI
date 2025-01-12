@@ -39,7 +39,7 @@ public class UserController {
             summary = "Register a new user",
             description = "Register a new user with a username and password. This will automatically log in and return a JSON Web Token to use with future requests.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "User created successfully."),
+                    @ApiResponse(responseCode = "201", description = "User created successfully."),
                     @ApiResponse(responseCode = "400", description = "Username or password invalid."),
                     @ApiResponse(responseCode = "409", description = "Username is already taken.")
             }
@@ -64,7 +64,7 @@ public class UserController {
                     @ApiResponse(responseCode = "403"),
             }
     )
-    public AuthToken login(@RequestBody @Validated AuthRequest request) {
+    public AuthToken login(@RequestBody AuthRequest request) {
 
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
