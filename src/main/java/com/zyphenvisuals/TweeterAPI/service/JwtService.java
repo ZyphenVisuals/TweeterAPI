@@ -26,9 +26,13 @@ public class JwtService {
     }
 
     public DecodedJWT decode(String token) {
-        return JWT
-                .require(Algorithm.HMAC256(jwtConfig.getSecret()))
-                .build()
-                .verify(token);
+        try {
+            return JWT
+                    .require(Algorithm.HMAC256(jwtConfig.getSecret()))
+                    .build()
+                    .verify(token);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -3,23 +3,26 @@ package com.zyphenvisuals.TweeterAPI.controller;
 import com.zyphenvisuals.TweeterAPI.exception.InvalidPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.UsernameTakenException;
 import com.zyphenvisuals.TweeterAPI.model.AuthRequest;
-import com.zyphenvisuals.TweeterAPI.model.AuthResponse;
+import com.zyphenvisuals.TweeterAPI.model.AuthToken;
 import com.zyphenvisuals.TweeterAPI.model.UserPrincipal;
 import com.zyphenvisuals.TweeterAPI.service.JwtService;
 import com.zyphenvisuals.TweeterAPI.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -44,14 +47,14 @@ public class UserController {
                     @ApiResponse(responseCode = "409")
             }
     )
-    public ResponseEntity<String> register(@RequestBody AuthRequest authRequest) {
+    public String register(@RequestBody AuthRequest authRequest) {
         try{
             userService.registerUser(authRequest.getUsername(), authRequest.getPassword());
-            return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+            return "User registered successfully";
         } catch (UsernameTakenException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         } catch (InvalidPasswordException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -64,7 +67,7 @@ public class UserController {
                     @ApiResponse(responseCode = "403"),
             }
     )
-    public AuthResponse login(@RequestBody @Validated AuthRequest request) {
+    public AuthToken login(@RequestBody @Validated AuthRequest request) {
 
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -74,9 +77,29 @@ public class UserController {
 
         var token = jwtService.encode(principal.getId(), List.of("USER"));
 
-        return AuthResponse.builder()
+        return AuthToken.builder()
                 .token(token)
                 .build();
 
+    }
+
+    @PostMapping("/token")
+    @Operation(
+            summary = "Get a new token",
+            description = "Get a brand new token for the already logged in  user. Used so that I don't have to implement proper refresh tokens.",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "403"),
+            },
+            security = @SecurityRequirement(name = "Token")
+    )
+    public AuthToken token(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+
+
+        var token = jwtService.encode(userPrincipal.getId(), List.of("USER"));
+
+        return AuthToken.builder()
+                .token(token)
+                .build();
     }
 }
