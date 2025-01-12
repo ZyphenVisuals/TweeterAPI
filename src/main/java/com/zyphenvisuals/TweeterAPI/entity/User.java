@@ -3,6 +3,8 @@ package com.zyphenvisuals.TweeterAPI.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -22,4 +24,10 @@ public class User {
     @Column(nullable = false, columnDefinition = "bpchar")
     @NonNull
     private String password;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private Timestamp created;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    private Timestamp updated;
 }

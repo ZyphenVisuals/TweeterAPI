@@ -1,6 +1,5 @@
 package com.zyphenvisuals.TweeterAPI.service;
 
-import com.zyphenvisuals.TweeterAPI.exception.InvalidLoginException;
 import com.zyphenvisuals.TweeterAPI.exception.InvalidPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.UsernameTakenException;
 import com.zyphenvisuals.TweeterAPI.entity.User;
@@ -9,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.net.UnknownServiceException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
