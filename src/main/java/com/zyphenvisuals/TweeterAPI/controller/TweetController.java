@@ -12,9 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Tag(name = "Tweet")
@@ -24,7 +24,7 @@ public class TweetController {
 
     private final TweetService tweetService;
 
-    @PostMapping("/post")
+    @PostMapping(value = "/post")
     @Operation(
             summary = "Post a tweet",
             description = "Post a new tweet from the currently logged in account.",
@@ -42,5 +42,34 @@ public class TweetController {
         } catch (TweetTooLongException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/list")
+    @Operation(
+            summary = "Get a list of tweets",
+            description = "Get a list of the newest tweets. If a 'before' parameter is given, then it will return the latest tweets before that timestamp, for pagination.",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "403"),
+            },
+            security = @SecurityRequirement(name = "Token")
+    )
+    public List<Tweet> list(@RequestParam(required = false) Integer before) {
+
+        return tweetService.getTweets(before);
+    }
+
+    @GetMapping("/checkNewer")
+    @Operation(
+            summary = "Check for newer tweets",
+            description = "The client should periodically check if newer tweets are available. If this returns true,the  client is responsible for loading them.",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "403"),
+            },
+            security = @SecurityRequirement(name = "Token")
+    )
+    public Boolean checkNewer(@RequestParam int id) {
+        return tweetService.checkNewer(id);
     }
 }
