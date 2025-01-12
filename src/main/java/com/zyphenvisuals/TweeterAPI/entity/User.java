@@ -1,11 +1,12 @@
 package com.zyphenvisuals.TweeterAPI.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
 public class User {
@@ -15,15 +16,10 @@ public class User {
     private int id;
 
     @Column(unique = true, nullable = false)
+    @NonNull
     private String username;
 
     @Column(nullable = false, columnDefinition = "bpchar")
+    @NonNull
     private String password;
-
-    public User(String username, String hashedPassword) {
-        this.username = username;
-        this.password = hashedPassword;
-    }
-
-    public User() {}
 }
