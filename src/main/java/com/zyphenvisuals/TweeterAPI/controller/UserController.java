@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
@@ -39,19 +39,19 @@ public class UserController {
             summary = "Register a new user",
             description = "Register a new user with a username and password. This will automatically log in and return a JSON Web Token to use with future requests.",
             responses = {
-                    @ApiResponse(responseCode = "200"),
-                    @ApiResponse(responseCode = "400"),
-                    @ApiResponse(responseCode = "409")
+                    @ApiResponse(responseCode = "200", description = "User created successfully."),
+                    @ApiResponse(responseCode = "400", description = "Username or password invalid."),
+                    @ApiResponse(responseCode = "409", description = "Username is already taken.")
             }
     )
-    public String register(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Void> register(@RequestBody AuthRequest authRequest) {
         try{
             userService.registerUser(authRequest.getUsername(), authRequest.getPassword());
-            return "User registered successfully";
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (UsernameTakenException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (InvalidPasswordException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
