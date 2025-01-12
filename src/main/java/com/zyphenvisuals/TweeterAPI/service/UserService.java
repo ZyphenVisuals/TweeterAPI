@@ -16,7 +16,10 @@ public class UserService {
     private final UserRepository userRepository;
 
     public void registerUser(String username, String password) throws InvalidPasswordException, UsernameTakenException {
-        // TODO check password strength
+        // check password strength
+        if(password.length() < 8) {
+            throw new InvalidPasswordException();
+        }
 
         // check if the user already exists
         User oldUser = userRepository.findByUsername(username);
