@@ -23,6 +23,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 @Server(
                         description = "Development",
                         url = "http://localhost:8080"
+                ),
+                @Server(
+                        description = "Production",
+                        url = "https://tweeter.zyphenvisuals.com"
                 )
         }
 )
