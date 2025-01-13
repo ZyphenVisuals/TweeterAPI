@@ -1,11 +1,9 @@
 package com.zyphenvisuals.TweeterAPI.controller;
 
+import com.zyphenvisuals.TweeterAPI.exception.IncorrectPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.InvalidPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.UsernameTakenException;
-import com.zyphenvisuals.TweeterAPI.model.LoginRequest;
-import com.zyphenvisuals.TweeterAPI.model.AuthToken;
-import com.zyphenvisuals.TweeterAPI.model.RegisterRequest;
-import com.zyphenvisuals.TweeterAPI.model.UserPrincipal;
+import com.zyphenvisuals.TweeterAPI.model.*;
 import com.zyphenvisuals.TweeterAPI.service.JwtService;
 import com.zyphenvisuals.TweeterAPI.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,7 +81,7 @@ public class UserController {
     @PostMapping("/token")
     @Operation(
             summary = "Get a new token",
-            description = "Get a brand new token for the already logged in  user. Used so that I don't have to implement proper refresh tokens.",
+            description = "Get a brand new token for the already logged in user. Used so that I don't have to implement proper refresh tokens.",
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "403"),
@@ -98,5 +96,27 @@ public class UserController {
         return AuthToken.builder()
                 .token(token)
                 .build();
+    }
+
+    @PostMapping("/change_password")
+    @Operation(
+            summary = "Change user password",
+            description = "Change the password of the currently logged in user.",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "400"),
+                    @ApiResponse(responseCode = "403")
+            },
+            security = @SecurityRequirement(name = "Token")
+    )
+    public ResponseEntity<Void> changePassword (@RequestBody PasswordChangeRequest passwordChangeRequest, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        try {
+            userService.changePassword(userPrincipal.getId(), passwordChangeRequest.getOld_password(), passwordChangeRequest.getNew_password(),  passwordChangeRequest.getNew_password_confirmation());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (InvalidPasswordException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IncorrectPasswordException e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 }
