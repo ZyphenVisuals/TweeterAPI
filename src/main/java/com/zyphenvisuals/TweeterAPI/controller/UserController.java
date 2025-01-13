@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/register")
     @Operation(
             summary = "Register a new user",
-            description = "Register a new user with a username and password. This will automatically log in and return a JSON Web Token to use with future requests.",
+            description = "Register a new user with a username and password. The user should then log in to get a token.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "User created successfully."),
                     @ApiResponse(responseCode = "400", description = "Username or password invalid."),
