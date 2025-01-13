@@ -1,5 +1,8 @@
 package com.zyphenvisuals.TweeterAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,9 +20,11 @@ public class Tweet {
     @Column(insertable = false, updatable = false)
     private int id;
 
-    @Column(nullable = false)
+    @JoinColumn(nullable = false, name="creator")
+    @ManyToOne(fetch = FetchType.LAZY)
     @NonNull
-    private Integer creator;
+    @JsonSerialize(as=User.class)
+    private User creator;
 
     @Column(nullable = false)
     @NonNull
@@ -29,5 +34,6 @@ public class Tweet {
     private Timestamp created;
 
     @Column(nullable = false, insertable = false)
+    @JsonIgnore
     private boolean deleted;
 }

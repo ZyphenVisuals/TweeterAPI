@@ -1,5 +1,7 @@
 package com.zyphenvisuals.TweeterAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +18,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
+    @JsonIgnore
     private int id;
 
     @Column(unique = true, nullable = false)
@@ -24,11 +27,13 @@ public class User {
 
     @Column(nullable = false, columnDefinition = "bpchar")
     @NonNull
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false, insertable = false, updatable = false)
     private Timestamp created;
 
     @Column(nullable = false, insertable = false, updatable = false)
+    @JsonIgnore
     private Timestamp updated;
 }
