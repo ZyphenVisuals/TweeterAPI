@@ -2,8 +2,9 @@ package com.zyphenvisuals.TweeterAPI.controller;
 
 import com.zyphenvisuals.TweeterAPI.exception.InvalidPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.UsernameTakenException;
-import com.zyphenvisuals.TweeterAPI.model.AuthRequest;
+import com.zyphenvisuals.TweeterAPI.model.LoginRequest;
 import com.zyphenvisuals.TweeterAPI.model.AuthToken;
+import com.zyphenvisuals.TweeterAPI.model.RegisterRequest;
 import com.zyphenvisuals.TweeterAPI.model.UserPrincipal;
 import com.zyphenvisuals.TweeterAPI.service.JwtService;
 import com.zyphenvisuals.TweeterAPI.service.UserService;
@@ -43,9 +44,9 @@ public class UserController {
                     @ApiResponse(responseCode = "409", description = "Username is already taken.")
             }
     )
-    public ResponseEntity<Void> register(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest registerRequest) {
         try{
-            userService.registerUser(authRequest.getUsername(), authRequest.getPassword());
+            userService.registerUser(registerRequest.getUsername(), registerRequest.getPassword(), registerRequest.getPassword_confirmation());
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (UsernameTakenException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -63,7 +64,7 @@ public class UserController {
                     @ApiResponse(responseCode = "403"),
             }
     )
-    public AuthToken login(@RequestBody AuthRequest request) {
+    public AuthToken login(@RequestBody LoginRequest request) {
 
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())

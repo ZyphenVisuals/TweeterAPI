@@ -1,11 +1,11 @@
 package com.zyphenvisuals.TweeterAPI.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public class AuthRequest {
+@AllArgsConstructor
+public class LoginRequest {
     private String username;
     private String password;
 }
