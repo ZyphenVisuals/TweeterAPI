@@ -20,6 +20,15 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    public User getById(int id) {
+        // get the user
+        Optional<User> userOptional = userRepository.findById(id);
+        if(userOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        return userOptional.get();
+    }
+
     private boolean insecurePassword(String password) {
         return password.length() < 8;
     }

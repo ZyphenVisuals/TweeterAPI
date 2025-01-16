@@ -1,5 +1,6 @@
 package com.zyphenvisuals.TweeterAPI.controller;
 
+import com.zyphenvisuals.TweeterAPI.entity.User;
 import com.zyphenvisuals.TweeterAPI.exception.IncorrectPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.InvalidPasswordException;
 import com.zyphenvisuals.TweeterAPI.exception.UsernameTakenException;
@@ -16,10 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -118,5 +117,21 @@ public class UserController {
         } catch (IncorrectPasswordException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+    }
+
+    @GetMapping("/me")
+    @Operation(
+            summary = "Get your own user data.",
+            description = "Only returns basic User data, not full Profile data.",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "403")
+            },
+            security = @SecurityRequirement(name = "Token")
+    )
+    public UserInfo me (@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userService.getById(userPrincipal.getId());
+
+        return new UserInfo(user.getUsername(), user.getCreated());
     }
 }
