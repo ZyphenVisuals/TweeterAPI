@@ -2,6 +2,7 @@ package com.zyphenvisuals.TweeterAPI.controller;
 
 import com.zyphenvisuals.TweeterAPI.entity.Tweet;
 import com.zyphenvisuals.TweeterAPI.exception.TweetTooLongException;
+import com.zyphenvisuals.TweeterAPI.model.PostTweetRequest;
 import com.zyphenvisuals.TweeterAPI.model.UserPrincipal;
 import com.zyphenvisuals.TweeterAPI.service.TweetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +36,10 @@ public class TweetController {
             },
             security = @SecurityRequirement(name = "Token")
     )
-    public ResponseEntity<Void> post(String text, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<Void> post(@RequestBody PostTweetRequest request
+            , @AuthenticationPrincipal UserPrincipal userPrincipal) {
         try{
-            tweetService.postTweet(userPrincipal.getId(), text);
+            tweetService.postTweet(userPrincipal.getId(), request.getText());
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (TweetTooLongException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
