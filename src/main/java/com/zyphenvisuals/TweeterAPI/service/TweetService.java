@@ -22,7 +22,7 @@ public class TweetService {
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
 
-    public void postTweet(int userId, String text) throws TweetTooLongException {
+    public Tweet postTweet(int userId, String text) throws TweetTooLongException {
         // check text length
         if(text.length() > 300) {
             throw new TweetTooLongException();
@@ -36,7 +36,9 @@ public class TweetService {
         User user = creatorOptional.get();
 
         // save the user
-        tweetRepository.save(new Tweet(user, text));
+        Tweet newTweet = new Tweet(user, text);
+        tweetRepository.save(newTweet);
+        return newTweet;
     }
 
     public List<Tweet> getTweets(@Nullable Integer before) {

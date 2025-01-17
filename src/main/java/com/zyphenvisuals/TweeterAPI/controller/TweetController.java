@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -36,13 +37,12 @@ public class TweetController {
             },
             security = @SecurityRequirement(name = "Token")
     )
-    public ResponseEntity<Void> post(@RequestBody PostTweetRequest request
+    public Tweet post(@RequestBody PostTweetRequest request
             , @AuthenticationPrincipal UserPrincipal userPrincipal) {
         try{
-            tweetService.postTweet(userPrincipal.getId(), request.getText());
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return tweetService.postTweet(userPrincipal.getId(), request.getText());
         } catch (TweetTooLongException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
