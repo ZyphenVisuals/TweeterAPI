@@ -36,9 +36,7 @@ public class TweetService {
         User user = creatorOptional.get();
 
         // save the user
-        Tweet newTweet = new Tweet(user, text);
-        tweetRepository.save(newTweet);
-        return newTweet;
+        return tweetRepository.save(new Tweet(user, text));
     }
 
     public List<Tweet> getTweets(@Nullable Integer before) {
